@@ -1,0 +1,33 @@
+{
+  "_": "税率・控除額は毎年改正されうる。運用開始前と各年分の申告前に国税庁の一次情報で必ず裏を取ること。",
+  "year": 2026,
+  "aoiro_deduction": 650000,
+  "salary_deduction": {
+    "min": 650000,
+    "brackets": [
+      { "upto": 1900000, "rate": 0.4, "sub": 100000 },
+      { "upto": 3600000, "rate": 0.3, "add": 80000 },
+      { "upto": 6600000, "rate": 0.2, "add": 440000 },
+      { "upto": 8500000, "rate": 0.1, "add": 1100000 },
+      { "upto": null, "flat": 1950000 }
+    ]
+  },
+  "basic_deduction": {
+    "income": 580000,
+    "resident": 430000
+  },
+  "income_tax_brackets": [
+    { "upto": 1950000,  "rate": 0.05, "deduct": 0 },
+    { "upto": 3300000,  "rate": 0.10, "deduct": 97500 },
+    { "upto": 6950000,  "rate": 0.20, "deduct": 427500 },
+    { "upto": 9000000,  "rate": 0.23, "deduct": 636000 },
+    { "upto": 18000000, "rate": 0.33, "deduct": 1536000 },
+    { "upto": 40000000, "rate": 0.40, "deduct": 2796000 },
+    { "upto": null,     "rate": 0.45, "deduct": 4796000 }
+  ],
+  "reconstruction_rate": 0.021,
+  "resident_tax": {
+    "rate": 0.10,
+    "per_capita": 5000
+  }
+}

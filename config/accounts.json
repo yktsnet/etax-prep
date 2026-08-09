@@ -1,0 +1,26 @@
+{
+  "expense": [
+    { "code": "settai",    "name": "接待交際費",   "icon": "utensils",      "vat": "10", "ratio": 1.0, "note": true },
+    { "code": "ryohi",     "name": "旅費交通費",   "icon": "train-front",   "vat": "10", "ratio": 1.0 },
+    { "code": "tsushin",   "name": "通信費",       "icon": "smartphone",    "vat": "10", "ratio": 0.3 },
+    { "code": "shomohin",  "name": "消耗品費",     "icon": "shopping-cart", "vat": "10", "ratio": 1.0, "asset": true },
+    { "code": "shinbun",   "name": "新聞図書費",   "icon": "book-open",     "vat": "10", "ratio": 1.0, "blank": true },
+    { "code": "tesuryo",   "name": "支払手数料",   "icon": "credit-card",   "vat": "10", "ratio": 1.0, "blank": true },
+    { "code": "chidai",    "name": "地代家賃",     "icon": "house",         "vat": "gai", "ratio": 0.25 },
+    { "code": "suido",     "name": "水道光熱費",   "icon": "lightbulb",     "vat": "10", "ratio": 0.25 },
+    { "code": "sozei",     "name": "租税公課",     "icon": "landmark",      "vat": "gai", "ratio": 1.0 },
+    { "code": "gaichu",    "name": "外注工賃",     "icon": "handshake",     "vat": "10", "ratio": 1.0 },
+    { "code": "zappi",     "name": "雑費",         "icon": "circle-help",   "vat": "10", "ratio": 1.0 }
+  ],
+  "hidden": [
+    { "code": "nizukuri",  "name": "荷造運賃",     "icon": "package",   "vat": "10", "ratio": 1.0 },
+    { "code": "kokoku",    "name": "広告宣伝費",   "icon": "megaphone", "vat": "10", "ratio": 1.0 },
+    { "code": "hoken",     "name": "損害保険料",   "icon": "shield",    "vat": "gai", "ratio": 1.0 },
+    { "code": "shuzen",    "name": "修繕費",       "icon": "wrench",    "vat": "10", "ratio": 1.0 },
+    { "code": "fukuri",    "name": "福利厚生費",   "icon": "gift",      "vat": "10", "ratio": 1.0 },
+    { "code": "risoku",    "name": "利子割引料",   "icon": "landmark",  "vat": "gai", "ratio": 1.0 }
+  ],
+  "revenue": [
+    { "code": "uriage",    "name": "売上高",       "icon": "banknote",  "vat": "10", "ratio": 1.0 }
+  ]
+}

@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>etax-prep</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<nav id="tabs">
+  <button data-tab="entry" class="on"><i data-icon="pencil-line"></i><span>Entry</span></button>
+  <button data-tab="ledger"><i data-icon="list"></i><span>Ledger</span></button>
+  <button data-tab="business"><i data-icon="trending-up"></i><span>Business</span></button>
+  <button data-tab="tax"><i data-icon="receipt-text"></i><span>Tax</span></button>
+  <button data-tab="settings"><i data-icon="settings"></i><span>Settings</span></button>
+</nav>
+
+<main>
+
+<section id="entry" class="tab on">
+  <div class="switch" data-kind="expense">
+    <span class="switch-ind"></span>
+    <button id="k-expense" class="on"><i data-icon="wallet"></i>経費</button>
+    <button id="k-revenue"><i data-icon="coins"></i>売上</button>
+  </div>
+
+  <div class="amount-field">
+    <span class="cur">¥</span>
+    <input id="amount" type="number" inputmode="numeric" placeholder="0" autocomplete="off">
+  </div>
+
+  <div id="accounts" class="grid"></div>
+
+  <details id="more">
+    <summary>日付・取引先・摘要・按分</summary>
+    <div class="egrid">
+      <label>日付<input id="date" type="date"></label>
+      <label>按分率<input id="ratio" type="number" step="0.05" min="0" max="1"></label>
+      <label class="wide">取引先<input id="payee" type="text" autocomplete="off"></label>
+      <label class="wide">摘要<input id="note" type="text" autocomplete="off"></label>
+    </div>
+  </details>
+
+  <div id="settai" class="callout" hidden>
+    <p class="callout-h"><i data-icon="circle-alert"></i>接待交際費は相手と目的の記録が要る</p>
+    <div class="egrid">
+      <label>相手<input id="who" type="text" placeholder="誰と" autocomplete="off"></label>
+      <label>目的<input id="purpose" type="text" placeholder="何のため" autocomplete="off"></label>
+    </div>
+  </div>
+
+  <div id="paste-area" class="paste-area" tabindex="0"><i data-icon="image"></i>クリックしてスクショを貼り付け（⌘V）</div>
+  <div id="paste-preview" class="callout" hidden>
+    <img id="paste-img" alt="">
+    <div class="callout-row">
+      <p id="paste-status" class="hint"></p>
+      <button id="paste-clear" class="ghost">添付をやめる</button>
+    </div>
+  </div>
+
+  <p id="asset-warn" class="warn" hidden></p>
+  <button id="submit" class="primary">登録</button>
+  <p id="msg" class="msg"></p>
+
+  <div class="recent">
+    <h3>直近の登録</h3>
+    <div id="recent-list"></div>
+  </div>
+</section>
+
+<section id="ledger" class="tab">
+  <div id="months" class="months"></div>
+  <div id="entries"></div>
+</section>
+
+<section id="business" class="tab viz-root">
+  <div id="biz-year" class="yearbar"></div>
+  <div id="biz-cards"></div>
+
+  <figure class="fig">
+    <figcaption>月次の売上と経費<span class="legend" id="lg-month"></span></figcaption>
+    <div id="ch-month"></div>
+  </figure>
+
+  <figure class="fig">
+    <figcaption>経費の内訳（年間・按分後）</figcaption>
+    <div id="ch-donut" class="donut-wrap"></div>
+  </figure>
+
+  <div id="biz-tax"></div>
+</section>
+
+<section id="tax" class="tab viz-root">
+  <div id="tax-year" class="yearbar"></div>
+  <div id="tax-hero"></div>
+  <div id="tax-flow"></div>
+
+  <h2><i data-icon="calendar"></i>決算整理</h2>
+  <p class="hint">期中は入金日・支払日で入れている。年をまたぐ未収・未払だけをここで拾う。</p>
+  <div id="accrual"></div>
+
+  <h2><i data-icon="package"></i>資産（一括償却・少額特例）</h2>
+  <div id="assets"></div>
+
+  <h2><i data-icon="coins"></i>消費税</h2>
+  <p class="hint">課税方式は年末に選ぶ。3通りを並べて比較する。</p>
+  <div id="vat"></div>
+
+  <h2><i data-icon="receipt-text"></i>決算書へ転記</h2>
+  <p class="hint">この数字を確定申告書等作成コーナーへ手で入れる。</p>
+  <div class="scroll"><table id="tenki"></table></div>
+
+  <h2><i data-icon="calendar"></i>勘定科目 × 月</h2>
+  <p class="hint">横にスクロールする。科目名の列は固定。</p>
+  <div class="scroll sticky"><table id="matrix"></table></div>
+</section>
+
+<section id="settings" class="tab">
+  <h2><i data-icon="banknote"></i>給与</h2>
+  <p class="hint">適用開始年月ごとに登録する。昇給したら新しい行を足すだけでよく、過去の集計は変わらない。</p>
+  <div id="salary" class="stack"></div>
+
+  <div class="addbox">
+    <div class="egrid">
+      <label>適用開始<input id="s-from" type="month"></label>
+      <label>月額（額面）<input id="s-monthly" type="number" inputmode="numeric" placeholder="500000"></label>
+      <label>振込日<input id="s-payday" type="number" inputmode="numeric" min="1" max="31" placeholder="25"></label>
+    </div>
+    <button id="s-add" class="secondary"><i data-icon="plus"></i>給与を追加</button>
+  </div>
+
+  <h2><i data-icon="scale"></i>控除・源泉</h2>
+  <div class="egrid">
+    <label class="wide">社会保険料等・iDeCo 等の合計<input id="deductions" type="number" inputmode="numeric"></label>
+    <label class="wide">源泉徴収税額<input id="withheld" type="number" inputmode="numeric"></label>
+    <label class="wide">確定した給与支払金額
+      <input id="confirmed" type="number" inputmode="numeric" placeholder="空なら月額からの見込み">
+    </label>
+  </div>
+  <button id="save-set" class="primary">保存</button>
+  <p id="set-msg" class="msg"></p>
+</section>
+
+</main>
+<script src="/app.js" type="module"></script>
+</body>
+</html>

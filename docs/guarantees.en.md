@@ -54,7 +54,12 @@
 - `salaryDeduction` never falls below the floor amount for low income
 - `salaryDeduction` follows the formula for each income bracket
 - `salaryDeduction` never exceeds the cap in the high-income bracket
+- `salaryDeduction` returns a flat amount across the bracket where the floor applies
 - `salaryIncome` returns salary revenue minus the salary income deduction
+- `basicDeduction` returns the basic deduction for the band the total income falls in
+- `basicDeduction` tapers the amount in the high-income bands, reaching zero in the top one
+- `estimate` uses a different basic deduction for resident tax than for income tax
+- The resident tax `estimate` returns adds a flat per-capita levy and forest environment tax on top of the income-based portion
 - `estimate` merges business and salary income, then subtracts itemised and basic deductions to produce taxable income
 - The taxable income `estimate` returns is truncated to the nearest ¥1,000
 - The income tax `estimate` returns includes the special reconstruction surtax
@@ -68,11 +73,16 @@
 | Salary deduction floor | `給与所得控除には下限がある` |
 | Per-bracket formula | `給与所得控除は収入帯ごとの式で決まる` |
 | Salary deduction cap | `給与所得控除には上限がある` |
+| Flat band at the floor | `給与収入190万円までの給与所得控除は定額` |
 | Salary income | `給与所得は収入から控除を引いた額` |
+| Basic deduction bands | `基礎控除は合計所得金額の帯で変わる` |
+| Basic deduction taper | `基礎控除は高所得帯で逓減し0になる` |
+| Resident basic deduction | `住民税の基礎控除は所得税と別の額を使う` |
 | Business and salary merged | `事業所得と給与所得を合算して課税所得を出す` |
 | Truncation to ¥1,000 | `課税所得は1000円未満を切り捨てる` |
 | Reconstruction surtax added | `所得税に復興特別所得税が上乗せされる` |
 | Loss offset | `事業が赤字なら給与所得と損益通算される` |
+| Resident tax flat portion | `住民税には均等割と森林環境税が定額で乗る` |
 | Marginal rate composition | `限界税率は所得税・住民税・復興特別所得税の合計` |
 | Refund sign | `源泉徴収済みが税額を上回れば還付になる` |
 | Never negative | `所得が控除に満たなくても課税所得と税額は負にならない` |

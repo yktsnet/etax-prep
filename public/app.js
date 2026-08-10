@@ -279,7 +279,7 @@ function openEdit(row, e) {
     <div class="shots">${(e.receipts ?? []).map((r) => `
       <span class="shot"><a href="/api/receipts/${r}" target="_blank"><img src="/api/receipts/${r}" alt=""></a>
       <button class="shot-x" data-r="${r}" title="この取引から外す">${icon('x')}</button></span>`).join('')}</div>
-    <p class="hint">${e.receipts?.length ? `証憑 ${e.receipts.length}件` : '証憑なし'}。貼り付け（⌘V / Ctrl+V）またはファイル選択で添付できます。</p>
+    <p class="hint">${e.receipts?.length ? `証憑 ${e.receipts.length}件` : '証憑なし'}。貼り付けまたはファイル選択で添付できます。</p>
     <label class="file-btn">${icon('image')}ファイルを選ぶ<input type="file" accept=".png,.jpg,.jpeg,.gif,.webp" hidden></label>
     <div class="row">
       <button data-a="save">保存</button>

@@ -13,7 +13,7 @@ Bookkeeping for the side business of someone who also draws a salary. A web app 
 | Entry | Ledger |
 |---|---|
 | ![Entry screen](docs/screenshots/entry.png) | ![Ledger screen](docs/screenshots/ledger.png) |
-| Type an amount, tap an account, submit. Date, counterparty, and apportionment are prefilled and only opened when needed. Receipts attach in place by pasting (⌘V) or picking a file | Transactions grouped by month, with apportionment ratio and receipt presence on the row. Voided transactions remain struck through — dropped from the totals, never deleted |
+| Type an amount, tap an account, submit. Date, counterparty, and apportionment are prefilled and only opened when needed. Receipts attach in place by pasting or picking a file | Transactions grouped by month, with apportionment ratio and receipt presence on the row. Voided transactions remain struck through — dropped from the totals, never deleted |
 
 | Business | Tax |
 |---|---|
@@ -27,8 +27,6 @@ Three things are fixed. A general-purpose accounting SaaS asks about them on eve
 - **Salary income exists alongside** — a business loss is offset against that salary, and the effect of ¥1 of expense follows the marginal rate on the combined total
 - **No separate business account** — every expense is paid out of pocket, so the credit side is fixed to owner's capital
 - **Part of the home is apportioned** — per-account default ratios are applied automatically
-
-You run it yourself, too. The books live in your own GitHub repository, delivery is Cloudflare Pages, authentication is Cloudflare Access. There is no sign-up and no database — and in exchange, **hosting it is on you**.
 
 ## Overview
 

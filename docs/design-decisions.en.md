@@ -48,6 +48,14 @@ Voiding sets a flag that excludes the transaction from aggregation. Combined wit
 
 A sibling project never implemented editing on the web side, but that was a matter of low need rather than technical difficulty. Here, correcting typos happens routinely, so the editing path is part of the MVP. It runs through the GitHub API's read-modify-write (a PUT carrying the retrieved sha); with a single user, conflicts are rare, and a rejection on sha mismatch is resolved by re-fetching and retrying.
 
+## Holding the ledger of record in a GitHub repository rather than a database
+
+The ledger only ever grows by appending, and voiding sets a flag rather than removing a row. There is a single writer, and reads amount to aggregating every entry for a given year. With no concurrent updates to reconcile and no index to maintain, reading the per-month JSONL files and aggregating them through pure functions is enough.
+
+The trail of corrections and deletions that the Electronic Books Preservation Act requires is satisfied by commit history as it stands. Moving to a database would mean designing and operating that trail separately. Since the preservation requirement already matches what git does, a database would add implementation rather than capability.
+
+Storage is delegated to GitHub, but there is no lock-in. The ledger of record is JSONL with one transaction per line plus the receipt files, so a clone leaves a complete copy in hand. Reads and writes through the API are confined to `core/store-github.mjs`, and local runs use `core/store-local.mjs` behind the same interface. Migrating means adding one more store adapter.
+
 ## Keeping receipt images in git rather than external storage
 
 Images are the electronic transaction data itself, and separating them from the ledger weakens preservation. A few hundred images and tens of megabytes per year is no burden for git.

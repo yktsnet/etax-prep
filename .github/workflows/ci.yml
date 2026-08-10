@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: 構文チェック
+        run: |
+          for f in core/*.mjs dev/*.mjs public/*.js functions/api/*.js tests/*.mjs; do
+            node --check "$f"
+          done
+
+      - name: 設定ファイルの妥当性
+        run: |
+          for f in config/*.json .claude/settings.json .github/dependabot.yml; do
+            case "$f" in
+              *.json) node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))" ;;
+              *) test -s "$f" ;;
+            esac
+          done
+
+      - name: テスト
+        run: node --test 'tests/*.test.mjs'

@@ -13,7 +13,7 @@ A web app that lets a salaried sole proprietor keep the books for a Japanese blu
 | Entry | Ledger |
 |---|---|
 | ![Entry screen](docs/screenshots/entry.png) | ![Ledger screen](docs/screenshots/ledger.png) |
-| Type an amount, tap an account, submit. Date, counterparty, and apportionment are prefilled and only opened when needed. Receipts paste in place with ⌘V | Transactions grouped by month, with apportionment ratio and receipt presence on the row. Voided transactions remain struck through — dropped from the totals, never deleted |
+| Type an amount, tap an account, submit. Date, counterparty, and apportionment are prefilled and only opened when needed. Receipts attach in place by pasting (⌘V) or picking a file | Transactions grouped by month, with apportionment ratio and receipt presence on the row. Voided transactions remain struck through — dropped from the totals, never deleted |
 
 | Business | Tax |
 |---|---|

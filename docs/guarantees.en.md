@@ -115,6 +115,21 @@
 | Detaching preserves the file | `証憑を取り外しても紐付けが外れるだけで、ファイルは残る` |
 | Aggregation by year | `ダッシュボードは年を指定して集計できる` |
 
+### 4. `tests/store-github.test.mjs` — core/store-github.mjs (GitHubStore)
+
+- `listEntries` and `readReceipt` treat a 404 as "not there yet", returning empty and null
+- `addEntry` throws when a write is refused with a 404, rather than reporting success for a save that did not happen
+- `saveReceipt` and `saveSettings` also turn a failed write into an exception
+- `GitHubStore` fails at construction when the token or the repository is missing
+
+| Guarantee (summary) | Test |
+|---|---|
+| 404 on read means absent | `取得の404は「まだ無い」として扱う` |
+| 404 on write means failure | `書き込みの404は握り潰さず例外にする` |
+| Receipt write failure | `証憑の保存も書き込み失敗を例外にする` |
+| Settings write failure | `設定の保存も書き込み失敗を例外にする` |
+| Missing required config | `トークンとリポジトリが無ければ生成時に落とす` |
+
 ## Gaps
 
 The following are contract-level but have no backing test. The reason each was deferred is given.

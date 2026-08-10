@@ -1,8 +1,8 @@
 ## 証憑をローカルファイル選択でも添付できるようにする
 id: 01
 branch-slug: receipt-file-picker
-github_issue:
-status: open
+github_issue: 4
+status: close
 type: feat
 対象: public/index.html, public/app.js, public/style.css, README.md, README.en.md
 内容: 証憑の入口がクリップボード貼り付けしかなく、保存済みの画像ファイル（Web 領収書のダウンロード、他端末から受け取ったスクショ）を添付できない。入力画面と台帳の編集行の両方に、ファイル選択からの添付経路を足す。圧縮・アップロードの既存処理は共有し、API は変更しない。

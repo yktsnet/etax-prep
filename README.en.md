@@ -4,7 +4,7 @@
 
 [![CI](https://github.com/yktsnet/etax-prep/actions/workflows/ci.yml/badge.svg)](https://github.com/yktsnet/etax-prep/actions/workflows/ci.yml)
 
-A web app that lets a salaried sole proprietor keep the books for a Japanese blue-return tax filing (¥650k deduction, e-Tax) by **entering nothing but an amount and an account**, deriving double-entry bookkeeping, household-expense apportionment, and the merge with salary income behind the scenes, all the way to figures ready to transcribe onto the return.
+Bookkeeping for the side business of someone who also draws a salary. A web app that prepares a Japanese blue-return tax filing (¥650k deduction, e-Tax) from **nothing but an amount and an account**, deriving double-entry bookkeeping, household-expense apportionment, and the merge with salary income behind the scenes, all the way to figures ready to transcribe onto the return.
 
 ## Screenshots
 
@@ -20,13 +20,23 @@ A web app that lets a salaried sole proprietor keep the books for a Japanese blu
 | ![Business screen](docs/screenshots/business.png) | ![Tax screen](docs/screenshots/tax.png) |
 | Revenue, expenses, and business income, with a monthly trend and a per-account breakdown. Business figures only, with no salary mixed in | The merge of business and salary income laid out as one chain of arithmetic, through taxable income, income tax, resident tax, and the expected refund. Year-end adjustments pick up receivables and payables that straddle the year |
 
+## Assumptions
+
+Three things are fixed. A general-purpose accounting SaaS asks about them on every entry because it has to accept every kind of user; fix them to one person and most of the answers are settled in advance.
+
+- **Salary income exists alongside** — a business loss is offset against that salary, and the effect of ¥1 of expense follows the marginal rate on the combined total
+- **No separate business account** — every expense is paid out of pocket, so the credit side is fixed to owner's capital
+- **Part of the home is apportioned** — per-account default ratios are applied automatically
+
+You run it yourself, too. The books live in your own GitHub repository, delivery is Cloudflare Pages, authentication is Cloudflare Access. There is no sign-up and no database — and in exchange, **hosting it is on you**.
+
 ## Overview
 
-Bookkeeping for a sole proprietorship stalls not because of how much there is to record, but because of **how many decisions each single entry demands**. Debit and credit, tax rate category, apportionment ratio, whether it counts as a fixed asset. Settling all of that on the spot, right after paying, is not realistic — and whatever gets put off becomes a month-end or year-end exercise in remembering.
+Bookkeeping stalls not because of how much there is to record, but because of **how many decisions each single entry demands**. Debit and credit, tax rate category, apportionment ratio, whether it counts as a fixed asset. Settling all of that on the spot, right after paying, is not realistic — and whatever gets put off becomes a month-end or year-end exercise in remembering.
 
 The later stages — closing, statements, entering figures into e-Tax — are already handled well enough by existing means. A survey of Japanese tax-filing OSS turns up bookkeeping systems with blue-return statements and journals, a local-first PWA journal, and an AI-agent plugin. All of them are thick at the back end and **none is designed as a front door for recording daily expenses in the fewest possible taps**. The tools that *are* light at the front door are household budget apps, which have no chart of accounts.
 
-So: build only the front door, and defer every decision that can be deferred.
+Fixing the assumptions to one person is only available to someone building it themselves. So: build only the front door, and defer every decision that can be deferred.
 
 | Decided at entry time | Deferred |
 |---|---|
@@ -37,7 +47,7 @@ So: build only the front door, and defer every decision that can be deferred.
 
 The result is that a routine entry takes effectively two actions: **type the amount, tap the account, submit**. The double-entry bookkeeping and balance sheet required for the ¥650k deduction are generated mechanically from this single-entry input.
 
-The target user is a sole proprietor, but not one whose return ends at business income. When salary income exists alongside it, a business loss is offset against that salary, and the tax saved per ¥1 of expense follows the marginal rate on the combined total — so the business books alone do not yield the figures the return needs.
+The return itself does not end at business income. Since a business loss is offset against salary, the business books alone do not yield the figures the return needs — so the app carries the merge through to taxable income, income tax, and resident tax.
 
 That merge exists for the return, though, not for reading the business. The `Business` tab shows only the business's own figures and never mixes in salary; the combination is separated into the `Tax` tab.
 
@@ -122,7 +132,7 @@ To exercise GitHub-backed storage locally, supply the keys from `.env.example` a
 - CSV import of bank or credit card statements, OCR of receipt photos
 - Multiple businesses or multiple users
 
-**This is built around one person's filing circumstances** (salary income, no separate business account, home apportionment). It will not fit unchanged if those premises differ.
+This is built around the [assumptions](#assumptions) stated above. It will not fit unchanged if they differ.
 
 ## Guarantees
 

@@ -148,15 +148,26 @@ button.danger .ic { width: 1rem; height: 1rem; }
 .callout-row { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
 .callout-row .hint { margin: 0; }
 
+.attach-row { display: flex; gap: .5rem; margin-top: .8rem; }
 .paste-area {
-  display: flex; align-items: center; justify-content: center; gap: .45rem;
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: .45rem;
   border: 1px dashed var(--line); border-radius: var(--r); padding: 1.1rem 1rem;
-  color: var(--mute); font-size: .82rem; cursor: text; margin-top: .8rem;
+  color: var(--mute); font-size: .82rem; cursor: text;
 }
 .paste-area:hover { border-color: var(--faint); }
 .paste-area:focus { outline: none; border-color: var(--accent); color: var(--accent); }
 #paste-preview img { max-height: 130px; max-width: 100%; border-radius: var(--r-sm); margin-bottom: .5rem; display: block; }
-@media (hover: none) and (pointer: coarse) { .paste-area, #paste-preview { display: none; } }
+/* 貼り付けはポインタ操作の効かない端末では成立しない。ファイル選択（.file-btn）は残す。 */
+@media (hover: none) and (pointer: coarse) { .paste-area { display: none; } }
+
+.file-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .35rem;
+  border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--btn); color: var(--fg);
+  font: 500 .82rem/1 var(--font); cursor: pointer; padding: .5rem .8rem; white-space: nowrap;
+}
+.file-btn:hover { background: var(--btn-hover); }
+.file-btn .ic { width: 1rem; height: 1rem; }
+.edit .file-btn { margin-top: .5rem; }
 
 /* ---------- recent ---------- */
 .recent { margin-top: 2.2rem; padding-top: 1.1rem; border-top: 1px solid var(--line); }

@@ -117,29 +117,47 @@ const kb = (n) => Math.round(n / 1024);
 const uploadReceipt = (id, blob) =>
   fetch(`/api/receipts/${id}?name=${Date.now()}.${blob.type.split('/')[1] || 'png'}`, { method: 'POST', body: blob });
 
-// 入力画面ではまだ取引が存在しないため、登録が済むまで画像を保持しておく。
-let pending = null;
+// 貼り付けとファイル選択の両方が、圧縮して onDone へ渡す先を共有する。
+// 画像以外が来たら何もしない（貼り付け・選択どちらでも同じ扱い）。
+async function attachImage(file, onDone) {
+  if (!file || !file.type.startsWith('image/')) return;
+  onDone(await compressImage(file), file);
+}
+
 async function takePaste(ev, onDone) {
   const item = [...(ev.clipboardData?.items ?? [])].find((i) => i.type.startsWith('image/'));
   if (!item) return;
   ev.preventDefault();
-  const original = item.getAsFile();
-  onDone(await compressImage(original), original);
+  await attachImage(item.getAsFile(), onDone);
+}
+
+// 同じファイルを選び直せるよう、処理後は毎回 input の値をクリアする。
+function takeFile(onDone) {
+  return async (ev) => {
+    const file = ev.target.files?.[0];
+    ev.target.value = '';
+    await attachImage(file, onDone);
+  };
+}
+
+// 入力画面ではまだ取引が存在しないため、登録が済むまで画像を保持しておく。
+let pending = null;
+function applyPending(blob, original) {
+  pending = blob;
+  $('#paste-img').src = URL.createObjectURL(blob);
+  $('#paste-preview').hidden = false;
+  $('#paste-status').textContent = blob === original
+    ? `${kb(blob.size)}KB を添付します`
+    : `${kb(original.size)}KB → ${kb(blob.size)}KB に圧縮して添付します`;
 }
 
 $('#paste-area').onclick = () => $('#paste-area').focus();
 $('#paste-clear').onclick = clearPending;
 document.addEventListener('paste', (ev) => {
   if (!$('#entry').classList.contains('on')) return;
-  takePaste(ev, (blob, original) => {
-    pending = blob;
-    $('#paste-img').src = URL.createObjectURL(blob);
-    $('#paste-preview').hidden = false;
-    $('#paste-status').textContent = blob === original
-      ? `${kb(blob.size)}KB を添付します`
-      : `${kb(original.size)}KB → ${kb(blob.size)}KB に圧縮して添付します`;
-  });
+  takePaste(ev, applyPending);
 });
+$('#file-input').onchange = takeFile(applyPending);
 
 function clearPending() {
   pending = null;
@@ -261,7 +279,8 @@ function openEdit(row, e) {
     <div class="shots">${(e.receipts ?? []).map((r) => `
       <span class="shot"><a href="/api/receipts/${r}" target="_blank"><img src="/api/receipts/${r}" alt=""></a>
       <button class="shot-x" data-r="${r}" title="この取引から外す">${icon('x')}</button></span>`).join('')}</div>
-    <p class="hint">${e.receipts?.length ? `証憑 ${e.receipts.length}件` : '証憑なし'}。ここにスクショを貼り付けると添付されます（PC）。</p>
+    <p class="hint">${e.receipts?.length ? `証憑 ${e.receipts.length}件` : '証憑なし'}。貼り付け（⌘V / Ctrl+V）またはファイル選択で添付できます。</p>
+    <label class="file-btn">${icon('image')}ファイルを選ぶ<input type="file" accept=".png,.jpg,.jpeg,.gif,.webp" hidden></label>
     <div class="row">
       <button data-a="save">保存</button>
       <button data-a="void" class="warn-btn">${e.void ? '取消を戻す' : '取り消す'}</button>
@@ -274,10 +293,12 @@ function openEdit(row, e) {
   const [ratio] = [...box.querySelectorAll('input[type=number]')].slice(1);
   const [payee, note] = box.querySelectorAll('input[type=text]');
 
-  box.onpaste = (ev) => takePaste(ev, async (blob) => {
+  const attachToEntry = async (blob) => {
     await uploadReceipt(e.id, blob);
     renderList();
-  });
+  };
+  box.onpaste = (ev) => takePaste(ev, attachToEntry);
+  box.querySelector('.file-btn input').onchange = takeFile(attachToEntry);
 
   const patch = (body) => api(`/api/entries/${e.id}`, {
     method: 'PATCH', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body),

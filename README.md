@@ -67,6 +67,8 @@ flowchart TB
 
 保存先の正本は GitHub リポジトリで、1取引が JSONL の1行、証憑が1ファイル。**clone ひとつで帳簿と証憑が完全に手元へ揃う。**
 
+ディレクトリ構成・保存形式・取引のフィールドは [context/structure.md](context/structure.md)、コードの規約は [context/conventions.md](context/conventions.md) にある。
+
 ## Design Decisions
 
 判断の全文は [docs/design-decisions.md](docs/design-decisions.md)。中心にあるのは次の4つ。

@@ -67,6 +67,8 @@ There are two runtimes (local node:http and Cloudflare Pages Functions), but **t
 
 The source of truth is a GitHub repository: one transaction per JSONL line, one file per receipt. **A single clone brings the complete ledger and all supporting documents to your machine.**
 
+[context/structure.md](context/structure.md) covers the directory layout, storage format, and transaction fields; [context/conventions.md](context/conventions.md) covers the coding conventions (both in Japanese).
+
 ## Design Decisions
 
 The full record is in [docs/design-decisions.en.md](docs/design-decisions.en.md). Four decisions sit at the centre.

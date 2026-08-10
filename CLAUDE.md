@@ -28,6 +28,8 @@ API は Web 標準の `Request → Response` ハンドラ（`core/api.mjs`）が
 
 保存先は差し替え可能で、`LocalStore`（ファイル）と `GitHubStore`（GitHub Contents API）が同じインターフェースを実装する。本番の正本は GitHub リポジトリで、git 履歴が電子帳簿保存法の訂正・削除の記録を兼ねる。
 
+ディレクトリ構成・保存形式・取引のフィールドは [context/structure.md](context/structure.md)、コードの規約は [context/conventions.md](context/conventions.md)。設計判断の全文は [docs/design-decisions.md](docs/design-decisions.md)、テストで固定した保証は [docs/guarantees.md](docs/guarantees.md)。
+
 ## 触るときの注意
 
 - **税率・控除額をコードに埋め込まない。** `config/tax-<年>.json` に置く。改正のたびに計算コードを触らずに済ませる

@@ -28,7 +28,7 @@ async function dashboard(store, accounts, taxCfg, year) {
 
   return {
     year, expense, revenue, salary, profit, aoiro, businessIncome, tax, settings,
-    basicDeduction: taxCfg.basic_deduction.income,
+    basicDeduction: tax.basicDeduction,
     assets: assetLedger(entries, year),
     vat: consumptionTax(entries, year),
     accrual: accruals(entries, year),

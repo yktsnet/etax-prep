@@ -5,7 +5,7 @@
   "salary_deduction": {
     "min": 650000,
     "brackets": [
-      { "upto": 1900000, "rate": 0.4, "sub": 100000 },
+      { "upto": 1900000, "flat": 650000 },
       { "upto": 3600000, "rate": 0.3, "add": 80000 },
       { "upto": 6600000, "rate": 0.2, "add": 440000 },
       { "upto": 8500000, "rate": 0.1, "add": 1100000 },
@@ -13,8 +13,23 @@
     ]
   },
   "basic_deduction": {
-    "income": 580000,
-    "resident": 430000
+    "income": [
+      { "upto": 1320000,  "amount": 950000 },
+      { "upto": 3360000,  "amount": 580000 },
+      { "upto": 4890000,  "amount": 680000 },
+      { "upto": 6550000,  "amount": 630000 },
+      { "upto": 23500000, "amount": 580000 },
+      { "upto": 24000000, "amount": 480000 },
+      { "upto": 24500000, "amount": 320000 },
+      { "upto": 25000000, "amount": 160000 },
+      { "upto": null,     "amount": 0 }
+    ],
+    "resident": [
+      { "upto": 24000000, "amount": 430000 },
+      { "upto": 24500000, "amount": 290000 },
+      { "upto": 25000000, "amount": 150000 },
+      { "upto": null,     "amount": 0 }
+    ]
   },
   "income_tax_brackets": [
     { "upto": 1950000,  "rate": 0.05, "deduct": 0 },
@@ -27,7 +42,10 @@
   ],
   "reconstruction_rate": 0.021,
   "resident_tax": {
+    "_": "地域差が出るのはこのブロックだけ。他の自治体で使うときは docs/localization.md を見ること。",
+    "municipality": "大阪市",
     "rate": 0.10,
-    "per_capita": 5000
+    "per_capita": 4300,
+    "forest_tax": 1000
   }
 }

@@ -15,6 +15,14 @@ export function salaryIncome(gross, cfg) {
   return Math.max(0, gross - salaryDeduction(gross, cfg));
 }
 
+// 基礎控除は合計所得金額で変わる（所得税は令和7・8年分の特例上乗せで非単調）。
+export function basicDeduction(totalIncome, table) {
+  for (const b of table) {
+    if (b.upto === null || totalIncome <= b.upto) return b.amount;
+  }
+  return 0;
+}
+
 function applyBrackets(taxable, brackets) {
   for (const b of brackets) {
     if (b.upto === null || taxable <= b.upto) {
@@ -30,12 +38,18 @@ export function estimate({ businessIncome, salaryGross, deductions = 0, withheld
   const salary = salaryIncome(salaryGross, cfg);
   const total = businessIncome + salary;
 
-  const taxableIncome = Math.max(0, Math.floor((total - deductions - cfg.basic_deduction.income) / 1000) * 1000);
+  const basic = basicDeduction(total, cfg.basic_deduction.income);
+  const residentBasic = basicDeduction(total, cfg.basic_deduction.resident);
+
+  const taxableIncome = Math.max(0, Math.floor((total - deductions - basic) / 1000) * 1000);
   const { tax: base, rate } = applyBrackets(taxableIncome, cfg.income_tax_brackets);
   const incomeTax = Math.floor(base * (1 + cfg.reconstruction_rate));
 
-  const taxableResident = Math.max(0, total - deductions - cfg.basic_deduction.resident);
-  const residentTax = Math.floor(taxableResident * cfg.resident_tax.rate) + cfg.resident_tax.per_capita;
+  const taxableResident = Math.max(0, total - deductions - residentBasic);
+  // 森林環境税は国税だが住民税と併せて賦課徴収されるため、納付額としては住民税に含めて出す。
+  const residentTax = Math.floor(taxableResident * cfg.resident_tax.rate)
+    + cfg.resident_tax.per_capita
+    + (cfg.resident_tax.forest_tax ?? 0);
 
   // 経費を1円積んだときに減る税額。事業所得が0未満（損益通算後）でも給与側に効く。
   const marginal = rate + cfg.resident_tax.rate + rate * cfg.reconstruction_rate;
@@ -44,6 +58,8 @@ export function estimate({ businessIncome, salaryGross, deductions = 0, withheld
     salaryIncome: salary,
     businessIncome,
     totalIncome: total,
+    basicDeduction: basic,
+    residentBasicDeduction: residentBasic,
     taxableIncome,
     incomeTax,
     residentTax,

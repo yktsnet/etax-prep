@@ -6,17 +6,27 @@
 
 A web app that lets a salaried sole proprietor keep the books for a Japanese blue-return tax filing (¥650k deduction, e-Tax) by **entering nothing but an amount and an account**, deriving double-entry bookkeeping, household-expense apportionment, and the merge with salary income behind the scenes, all the way to figures ready to transcribe onto the return.
 
+## Screenshots
+
+`node dev/server.mjs` reproduces the same screens locally, showing the bundled dummy data.
+
+| Entry | Ledger |
+|---|---|
+| ![Entry screen](docs/screenshots/entry.png) | ![Ledger screen](docs/screenshots/ledger.png) |
+| Type an amount, tap an account, submit. Date, counterparty, and apportionment are prefilled and only opened when needed. Receipts paste in place with ⌘V | Transactions grouped by month, with apportionment ratio and receipt presence on the row. Voided transactions remain struck through — dropped from the totals, never deleted |
+
+| Business | Tax |
+|---|---|
+| ![Business screen](docs/screenshots/business.png) | ![Tax screen](docs/screenshots/tax.png) |
+| Revenue, expenses, and business income, with a monthly trend and a per-account breakdown. Business figures only, with no salary mixed in | The merge of business and salary income laid out as one chain of arithmetic, through taxable income, income tax, resident tax, and the expected refund. Year-end adjustments pick up receivables and payables that straddle the year |
+
 ## Overview
 
-### The problem
-
-Side-business bookkeeping stalls not because of how much there is to record, but because of **how many decisions each single entry demands**. Debit and credit, tax rate category, apportionment ratio, whether it counts as a fixed asset. Settling all of that right after paying a restaurant bill is not realistic.
+Bookkeeping for a sole proprietorship stalls not because of how much there is to record, but because of **how many decisions each single entry demands**. Debit and credit, tax rate category, apportionment ratio, whether it counts as a fixed asset. Settling all of that on the spot, right after paying, is not realistic — and whatever gets put off becomes a month-end or year-end exercise in remembering.
 
 The later stages — closing, statements, entering figures into e-Tax — are already handled well enough by existing means. A survey of Japanese tax-filing OSS turns up bookkeeping systems with blue-return statements and journals, a local-first PWA journal, and an AI-agent plugin. All of them are thick at the back end and **none is designed as a front door for recording daily expenses in the fewest possible taps**. The tools that *are* light at the front door are household budget apps, which have no chart of accounts.
 
-### The approach
-
-Build only the front door, and defer every decision that can be deferred.
+So: build only the front door, and defer every decision that can be deferred.
 
 | Decided at entry time | Deferred |
 |---|---|
@@ -27,7 +37,9 @@ Build only the front door, and defer every decision that can be deferred.
 
 The result is that a routine entry takes effectively two actions: **type the amount, tap the account, submit**. The double-entry bookkeeping and balance sheet required for the ¥650k deduction are generated mechanically from this single-entry input.
 
-The `Business` tab shows only the business's own figures and never mixes in salary. Merging with salary income exists for the tax return, so it is separated into the `Tax` tab rather than intruding on the view of how the business is actually doing.
+The target user is a sole proprietor, but not one whose return ends at business income. When salary income exists alongside it, a business loss is offset against that salary, and the tax saved per ¥1 of expense follows the marginal rate on the combined total — so the business books alone do not yield the figures the return needs.
+
+That merge exists for the return, though, not for reading the business. The `Business` tab shows only the business's own figures and never mixes in salary; the combination is separated into the `Tax` tab.
 
 ## Architecture
 
@@ -114,7 +126,9 @@ To exercise GitHub-backed storage locally, supply the keys from `.env.example` a
 
 Contract-level guarantees and the tests backing them are collected in [docs/guarantees.en.md](docs/guarantees.en.md). Behaviour not listed there is not promised.
 
-Tax rates and deduction amounts live in `config/tax-<year>.json`, and the calculation code knows nothing about the year. **The bundled values are not guaranteed to track annual tax reform.** Verify them against the National Tax Agency's primary sources before each filing. Every figure produced is an estimate and is not a guarantee that a return is correct.
+Tax rates and deduction amounts live in `config/tax-<year>.json`, and the calculation code knows nothing about the year. **The bundled values are for Osaka City and tax year 2026, and are not guaranteed to track annual tax reform.** Verify them against the National Tax Agency's primary sources before each filing. Every figure produced is an estimate and is not a guarantee that a return is correct.
+
+Resident tax differs by municipality in the per-capita levy. See [docs/localization.md](docs/localization.md) (Japanese) for how to adapt the config to your own municipality and tax year.
 
 ## Deploy
 

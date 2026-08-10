@@ -131,3 +131,13 @@ test('適用開始前の月は給与が立たない', () => {
   assert.equal(s.months[0], 0);
   assert.equal(s.months[3], 500000);
 });
+
+test('軽減税率8%も税込から割り戻す', () => {
+  const entries = [e({ kind: 'revenue', id: 'r', date: '2026-06-30', account: 'uriage', amount: 108000, vat: '8' })];
+  assert.equal(consumptionTax(entries, 2026).salesVat, 8000);
+});
+
+test('取消された取引は消費税の集計に入らない', () => {
+  const entries = [e({ kind: 'revenue', id: 'r', date: '2026-06-30', account: 'uriage', amount: 110000, void: true })];
+  assert.equal(consumptionTax(entries, 2026).salesVat, 0);
+});

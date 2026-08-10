@@ -148,6 +148,8 @@ main への push を Cloudflare Pages が検知してビルド・配信する。
 
 Cloudflare 側で設定するのは、ビルド出力ディレクトリ（`public`）と、帳簿リポジトリへ書き込むための環境変数（キーは `.env.example` を参照）。前段に Cloudflare Access を置き、Google ログインで絞る。
 
+この構成を一から組む手順は [cf-private-deploy](https://github.com/yktsnet/dotfiles-public/blob/main/.claude/skills/cf-private-deploy/SKILL.md) にある。Pages プロジェクトの作成から Access のポリシー、`<project>.pages.dev` を塞ぐところまでを REST API で通す（`functions/_middleware.js` がその塞ぎに当たる）。ダッシュボードの操作が要るのはアカウントにつき2回だけである。
+
 ## License
 
 MIT

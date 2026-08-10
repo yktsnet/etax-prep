@@ -6,11 +6,9 @@ The full record of technology choices and design decisions for etax-prep. The De
 
 ## Building it rather than adopting an existing OSS project
 
-Japanese tax-filing OSS falls into three families: bookkeeping systems with blue-return statements and journals (the mpp_fsjs family), a local-first PWA journal (e-shiwake), and an AI-agent plugin (shinkoku). All are thick at the back end — closing, statements, e-Tax — and none is designed as a front door for entering daily expenses with minimum effort. The tools that are light at the front door are household budget apps with no chart of accounts.
+Japanese tax-filing OSS falls into three families: bookkeeping systems with blue-return statements and journals, a local-first PWA journal, and an AI-agent plugin. All are thick at the back end — closing, statements, e-Tax — and none is designed as a front door for entering daily expenses with minimum effort. The tools that are light at the front door are household budget apps with no chart of accounts.
 
 What was needed was the front door. Entering figures into e-Tax by hand is already routine and not a burden. Adopting an existing project would only duplicate the back end without solving the front-door problem.
-
-Pairing with shinkoku and delegating the back end to it was considered, but the advantage evaporated once entering e-Tax by hand was settled as the premise.
 
 ## Accepting single-entry input and converting to double-entry
 
@@ -37,8 +35,6 @@ The operating rule is to enter one line on the receipt date during the year and,
 Since January 2024, electronic transaction data (credit card statement screenshots, web receipts, PDFs attached to email) must be preserved electronically, whereas a receipt handed over on paper may simply be kept as a paper original. Scanner preservation is an optional scheme, and adopting it triggers requirements around resolution, timestamp equivalents, and correction and deletion history.
 
 Photographing receipts without meeting those requirements does not permit discarding the originals and merely creates duplicate management, so paper stays in an envelope and outside the app. The app handles only electronic transaction data, aligning the boundary of the implementation with the boundary in the regulation.
-
-Photographing receipts is useful as insurance against thermal paper fading, but it is not regulatory compliance, so it remains an optional attachment.
 
 ## Not making deletion physical
 

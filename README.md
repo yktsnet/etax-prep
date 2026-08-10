@@ -132,8 +132,6 @@ Node 24 以上。依存パッケージのインストールもビルドも要ら
 - 銀行・クレジット明細の CSV 取込、レシート写真の OCR
 - 複数事業者・複数ユーザー
 
-冒頭の[前提](#前提)に合わせて作ってある。前提が違う場合はそのままでは使えない。
-
 ## Guarantees
 
 契約面の保証と対応するテストは [docs/guarantees.md](docs/guarantees.md) にまとめてある。ここに載っていない振る舞いは約束ではない。
@@ -148,7 +146,7 @@ main への push を Cloudflare Pages が検知してビルド・配信する。
 
 Cloudflare 側で設定するのは、ビルド出力ディレクトリ（`public`）と、帳簿リポジトリへ書き込むための環境変数（キーは `.env.example` を参照）。前段に Cloudflare Access を置き、Google ログインで絞る。
 
-この構成を一から組む手順は [cf-private-deploy](https://github.com/yktsnet/dotfiles-public/blob/main/.claude/skills/cf-private-deploy/SKILL.md) にある。Pages プロジェクトの作成から Access のポリシー、`<project>.pages.dev` を塞ぐところまでを REST API で通す（`functions/_middleware.js` がその塞ぎに当たる）。ダッシュボードの操作が要るのはアカウントにつき2回だけである。
+この構成を一から組む手順は [cf-private-deploy](https://github.com/yktsnet/dotfiles-public/blob/main/.claude/skills/cf-private-deploy/SKILL.md) にある。Pages プロジェクトの作成から Access のポリシー、`<project>.pages.dev` を塞ぐところまでを REST API で通す（`functions/_middleware.js` がその塞ぎに当たる）。
 
 ## License
 

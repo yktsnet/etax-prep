@@ -132,8 +132,6 @@ To exercise GitHub-backed storage locally, supply the keys from `.env.example` a
 - CSV import of bank or credit card statements, OCR of receipt photos
 - Multiple businesses or multiple users
 
-This is built around the [assumptions](#assumptions) stated above. It will not fit unchanged if they differ.
-
 ## Guarantees
 
 Contract-level guarantees and the tests backing them are collected in [docs/guarantees.en.md](docs/guarantees.en.md). Behaviour not listed there is not promised.
@@ -148,7 +146,7 @@ Cloudflare Pages picks up pushes to main and builds and serves them. GitHub Acti
 
 What is configured on the Cloudflare side is the build output directory (`public`) and the environment variables used to write to the ledger repository (see `.env.example` for the keys). Cloudflare Access sits in front, restricted to Google sign-in.
 
-The procedure for building this setup from scratch is in [cf-private-deploy](https://github.com/yktsnet/dotfiles-public/blob/main/.claude/skills/cf-private-deploy/SKILL.md). It runs everything through the REST API, from creating the Pages project to the Access policy and sealing off `<project>.pages.dev` (`functions/_middleware.js` is that seal). The dashboard is needed only twice per account.
+The procedure for building this setup from scratch is in [cf-private-deploy](https://github.com/yktsnet/dotfiles-public/blob/main/.claude/skills/cf-private-deploy/SKILL.md). It runs everything through the REST API, from creating the Pages project to the Access policy and sealing off `<project>.pages.dev` (`functions/_middleware.js` is that seal).
 
 ## License
 

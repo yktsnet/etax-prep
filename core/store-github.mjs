@@ -52,6 +52,20 @@ export class GitHubStore {
     return r && !Array.isArray(r) ? { sha: r.sha, content: r.content, encoding: r.encoding } : null;
   }
 
+  async #getRaw(path) {
+    const res = await fetch(`${API}/repos/${this.repo}/contents/${encodeURI(path)}?ref=${this.branch}`, {
+      headers: {
+        authorization: `Bearer ${this.token}`,
+        accept: 'application/vnd.github.raw',
+        'user-agent': 'etax-prep',
+        'x-github-api-version': '2022-11-28',
+      },
+    });
+    if (res.status === 404) return null;
+    if (!res.ok) throw new Error(`GitHub ${res.status}: ${(await res.text()).slice(0, 200)}`);
+    return new Uint8Array(await res.arrayBuffer());
+  }
+
   async #list(path) {
     const r = await this.#req(`contents/${encodeURI(path)}?ref=${this.branch}`);
     return Array.isArray(r) ? r : [];
@@ -136,9 +150,14 @@ export class GitHubStore {
     return rel;
   }
 
+  // Contents API は 1MB を超えるファイルの content を空で返す。そのまま復号すると
+  // 0 バイトの証憑が例外も出さずに通ってしまうため、raw で取り直す
   async readReceipt(rel) {
-    const f = await this.#get(this.#path('receipts', rel));
-    return f ? b64decodeBytes(f.content) : null;
+    const path = this.#path('receipts', rel);
+    const f = await this.#get(path);
+    if (!f) return null;
+    if (f.encoding !== 'base64') return this.#getRaw(path);
+    return b64decodeBytes(f.content);
   }
 
   async getSettings() {

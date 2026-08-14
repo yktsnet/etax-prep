@@ -47,6 +47,18 @@ test('設定の保存も書き込み失敗を例外にする', async () => {
   } finally { restore(); }
 });
 
+test('1MB を超える証憑は raw で取り直して中身を返す', async () => {
+  const body = new Uint8Array([7, 8, 9]);
+  const restore = stubFetch(async (_url, init) => (
+    init?.headers?.accept === 'application/vnd.github.raw'
+      ? new Response(body, { status: 200 })
+      : ok({ sha: 's', content: '', encoding: 'none' })
+  ));
+  try {
+    assert.deepEqual(await store().readReceipt('a/big.webp'), body);
+  } finally { restore(); }
+});
+
 test('トークンとリポジトリが無ければ生成時に落とす', () => {
   assert.throws(() => new GitHubStore({ repo: 'o/r' }), /GITHUB_TOKEN/);
   assert.throws(() => new GitHubStore({ token: 't' }), /GITHUB_REPO/);

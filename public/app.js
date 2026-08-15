@@ -165,39 +165,46 @@ function clearPending() {
   $('#paste-img').removeAttribute('src');
 }
 
-$('#submit').onclick = async () => {
+$('#submit').onclick = () => {
   const amount = Number($('#amount').value);
   if (!(amount > 0)) return void ($('#msg').textContent = '金額を入れてください');
   if (!picked) return void ($('#msg').textContent = '勘定科目を選んでください');
 
   const note = [$('#note').value, $('#who').value && `相手: ${$('#who').value}`, $('#purpose').value && `目的: ${$('#purpose').value}`]
     .filter(Boolean).join(' / ');
-
-  const created = await api('/api/entries', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({
-      kind, amount, account: picked.code,
-      date: $('#date').value || undefined,
-      ratio: Number($('#ratio').value),
-      payee: $('#payee').value, note,
-      assetKind: Number($('#amount').value) >= 100000 ? assetKind : null,
-    }),
-  });
-  if (pending) await uploadReceipt(created.id, pending);
+  const body = {
+    kind, amount, account: picked.code,
+    date: $('#date').value || undefined,
+    ratio: Number($('#ratio').value),
+    payee: $('#payee').value, note,
+    assetKind: amount >= 100000 ? assetKind : null,
+  };
+  const attaching = pending;
 
   recent.splice(0, 0, picked.code);
   localStorage.setItem('recent', JSON.stringify([...new Set(recent)].slice(0, 8)));
 
-  $('#msg').textContent = `${picked.name} ${yen(amount)} を登録しました${pending ? '（証憑つき）' : ''}`;
+  $('#msg').textContent = `${picked.name} ${yen(amount)} を登録しました${attaching ? '（証憑つき）' : ''}`;
   clearPending();
   assetKind = null;
   for (const id of ['#amount', '#payee', '#note', '#who', '#purpose']) $(id).value = '';
   $('#settai').hidden = true;
   $('#asset-warn').hidden = true;
   renderAccounts();
-  renderRecent();
   setTimeout(() => ($('#msg').textContent = ''), 2500);
+
+  // サーバーへの反映（GitHubコミット）は遅いので背景で進める。フォームはここで確定させる。
+  (async () => {
+    try {
+      const created = await api('/api/entries', {
+        method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body),
+      });
+      if (attaching) await uploadReceipt(created.id, attaching);
+      renderRecent();
+    } catch (err) {
+      alert(`登録に失敗しました: ${err.message}`);
+    }
+  })();
 };
 
 async function renderRecent() {
@@ -215,9 +222,15 @@ async function renderRecent() {
 
 /* ---------- ledger ---------- */
 
+let cachedEntries = [];
+
 async function renderList() {
+  cachedEntries = await api('/api/entries');
+  renderEntries(cachedEntries);
+}
+
+function renderEntries(entries) {
   const box = $('#entries');
-  const entries = await api('/api/entries');
   box.innerHTML = '';
 
   const months = [...new Set(entries.map((e) => e.date.slice(0, 7)))].sort().reverse();
@@ -300,9 +313,14 @@ function openEdit(row, e) {
   box.onpaste = (ev) => takePaste(ev, attachToEntry);
   box.querySelector('.file-btn input').onchange = takeFile(attachToEntry);
 
-  const patch = (body) => api(`/api/entries/${e.id}`, {
-    method: 'PATCH', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body),
-  }).then(renderList);
+  const patch = (body) => {
+    const i = cachedEntries.findIndex((x) => x.id === e.id);
+    if (i >= 0) cachedEntries[i] = { ...cachedEntries[i], ...body };
+    renderEntries(cachedEntries);
+    return api(`/api/entries/${e.id}`, {
+      method: 'PATCH', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body),
+    }).catch((err) => { alert(`保存に失敗しました: ${err.message}`); renderList(); });
+  };
 
   box.querySelectorAll('.shot-x').forEach((b) => {
     b.onclick = async (ev) => {

@@ -181,6 +181,12 @@ $('#submit').onclick = () => {
   };
   const attaching = pending;
 
+  // サーバーが採番する前の仮の行。成功したら本物と差し替え、失敗したら取り除く。
+  const draft = { ...body, id: `draft-${Date.now()}`, date: body.date ?? new Date().toISOString().slice(0, 10), receipts: [] };
+  cachedEntries = [draft, ...cachedEntries]
+    .sort((a, b) => (b.date + b.id).localeCompare(a.date + a.id));
+  renderRecent();
+
   recent.splice(0, 0, picked.code);
   localStorage.setItem('recent', JSON.stringify([...new Set(recent)].slice(0, 8)));
 
@@ -200,15 +206,27 @@ $('#submit').onclick = () => {
         method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body),
       });
       if (attaching) await uploadReceipt(created.id, attaching);
+      cachedEntries = cachedEntries.map((e) => (e.id === draft.id ? created : e));
       renderRecent();
     } catch (err) {
+      cachedEntries = cachedEntries.filter((e) => e.id !== draft.id);
+      renderRecent();
       alert(`登録に失敗しました: ${err.message}`);
     }
   })();
 };
 
-async function renderRecent() {
-  const entries = (await api('/api/entries')).filter((e) => !e.void).slice(0, 5);
+// 取得は1本にまとめ、以降の描画はキャッシュから行う。
+// GitHub 経由の一覧取得は遅く、登録・編集のたびに取り直すと待ちが目に見える。
+let cachedEntries = [];
+
+async function loadEntries() {
+  cachedEntries = await api('/api/entries');
+  return cachedEntries;
+}
+
+function renderRecent() {
+  const entries = cachedEntries.filter((e) => !e.void).slice(0, 5);
   $('#recent-list').innerHTML = entries.length
     ? entries.map((e) => {
       const a = byCode.get(e.account);
@@ -222,11 +240,9 @@ async function renderRecent() {
 
 /* ---------- ledger ---------- */
 
-let cachedEntries = [];
-
 async function renderList() {
-  cachedEntries = await api('/api/entries');
   renderEntries(cachedEntries);
+  renderEntries(await loadEntries());
 }
 
 function renderEntries(entries) {
@@ -308,7 +324,8 @@ function openEdit(row, e) {
 
   const attachToEntry = async (blob) => {
     await uploadReceipt(e.id, blob);
-    renderList();
+    await loadEntries();
+    renderEntries(cachedEntries);
   };
   box.onpaste = (ev) => takePaste(ev, attachToEntry);
   box.querySelector('.file-btn input').onchange = takeFile(attachToEntry);
@@ -326,8 +343,14 @@ function openEdit(row, e) {
     b.onclick = async (ev) => {
       ev.stopPropagation();
       if (!confirm('この証憑を取引から外しますか。ファイル自体はリポジトリに残ります。')) return;
-      await api(`/api/receipts/${b.dataset.r}`, { method: 'DELETE' });
-      renderList();
+      const ref = b.dataset.r;
+      const i = cachedEntries.findIndex((x) => x.id === e.id);
+      if (i >= 0) {
+        cachedEntries[i] = { ...cachedEntries[i], receipts: (cachedEntries[i].receipts ?? []).filter((r) => r !== ref) };
+      }
+      renderEntries(cachedEntries);
+      api(`/api/receipts/${ref}`, { method: 'DELETE' })
+        .catch(async (err) => { alert(`証憑の取り外しに失敗しました: ${err.message}`); await loadEntries(); renderEntries(cachedEntries); });
     };
   });
 
@@ -524,8 +547,10 @@ function renderVat(d) {
 
 /* ---------- settings ---------- */
 
+let cachedSettings = null;
+
 async function renderSettings() {
-  const s = await api('/api/settings');
+  const s = cachedSettings ?? (cachedSettings = await api('/api/settings'));
   const list = s.salary ?? [];
 
   $('#salary').innerHTML = list.length
@@ -538,9 +563,14 @@ async function renderSettings() {
         </div>`).join('')
     : '<p class="empty">給与が未登録です。下から追加してください。</p>';
 
-  const save = (next) => api('/api/settings', {
-    method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify(next),
-  }).then(renderSettings);
+  // 送信の完了を待たずに新しい設定で描き直す。失敗したらサーバーの値へ戻す。
+  const save = (next) => {
+    cachedSettings = next;
+    renderSettings();
+    api('/api/settings', {
+      method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify(next),
+    }).catch((err) => { alert(`設定の保存に失敗しました: ${err.message}`); cachedSettings = null; renderSettings(); });
+  };
 
   $('#salary').querySelectorAll('button.danger').forEach((b) => {
     b.onclick = () => {
@@ -568,8 +598,8 @@ async function renderSettings() {
     save({ ...s, salary: next });
   };
 
-  $('#save-set').onclick = async () => {
-    await save({
+  $('#save-set').onclick = () => {
+    save({
       ...s,
       deductions: Number($('#deductions').value) || 0,
       withheld: Number($('#withheld').value) || 0,
@@ -587,4 +617,4 @@ for (const l of [accounts.expense, accounts.hidden, accounts.revenue]) for (cons
 paintIcons();
 $('#date').value = new Date().toISOString().slice(0, 10);
 renderAccounts();
-renderRecent();
+loadEntries().then(renderRecent);

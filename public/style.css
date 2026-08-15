@@ -158,7 +158,11 @@ button.danger .ic { width: 1rem; height: 1rem; }
 .paste-area:focus { outline: none; border-color: var(--accent); color: var(--accent); }
 #paste-preview img { max-height: 130px; max-width: 100%; border-radius: var(--r-sm); margin-bottom: .5rem; display: block; }
 /* 貼り付けはポインタ操作の効かない端末では成立しない。ファイル選択（.file-btn）は残す。 */
-@media (hover: none) and (pointer: coarse) { .paste-area { display: none; } }
+@media (hover: none) and (pointer: coarse) {
+  .paste-area { display: none; }
+  /* 貼り付けが消えて唯一の添付導線になるため、指で押せる幅と高さに広げる。 */
+  .file-btn { flex: 1; padding: .8rem 1rem; }
+}
 
 .file-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: .35rem;

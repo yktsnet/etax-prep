@@ -99,7 +99,7 @@ $('#k-expense').onclick = () => setKind('expense');
 $('#k-revenue').onclick = () => setKind('revenue');
 
 // Retina のスクショは実寸が大きい。長辺と WebP 再圧縮で落とす（hi と同じ方針）。
-async function compressImage(blob, { maxDim = 1600, quality = 0.85, skipBelowBytes = 300 * 1024 } = {}) {
+async function compressImage(blob, { maxDim = 1600, quality = 0.7, skipBelowBytes = 300 * 1024 } = {}) {
   let bitmap;
   try { bitmap = await createImageBitmap(blob); } catch { return blob; }
   const scale = Math.min(1, maxDim / Math.max(bitmap.width, bitmap.height));
@@ -280,7 +280,7 @@ function openEdit(row, e) {
       <span class="shot"><a href="/api/receipts/${r}" target="_blank"><img src="/api/receipts/${r}" alt=""></a>
       <button class="shot-x" data-r="${r}" title="この取引から外す">${icon('x')}</button></span>`).join('')}</div>
     <p class="hint">${e.receipts?.length ? `証憑 ${e.receipts.length}件` : '証憑なし'}。貼り付けまたはファイル選択で添付できます。</p>
-    <label class="file-btn">${icon('image')}ファイルを選ぶ<input type="file" accept=".png,.jpg,.jpeg,.gif,.webp" hidden></label>
+    <label class="file-btn">${icon('image')}ファイルを選ぶ<input type="file" accept="image/*" hidden></label>
     <div class="row">
       <button data-a="save">保存</button>
       <button data-a="void" class="warn-btn">${e.void ? '取消を戻す' : '取り消す'}</button>

@@ -5,7 +5,6 @@
       "Bash(node --test *)"
     ],
     "deny": [
-      "Bash(ssh *)",
       "Bash(wrangler *)",
       "Bash(npx wrangler *)"
     ]

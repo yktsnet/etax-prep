@@ -20,7 +20,7 @@ export function toJournal(entry, accounts) {
 }
 
 // 一括償却は取得年から3年均等で費用化する。取得年以外にも当年分が立つため、
-// 集計の前に「その年に効く金額」へ展開する。少額特例は取得年に全額なので素通し。
+// 集計の前に「その年に計上する金額」へ展開する。少額特例は取得年に全額なので素通し。
 export function effectiveEntries(entries, year) {
   const out = [];
   for (const e of entries) {

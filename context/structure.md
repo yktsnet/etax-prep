@@ -29,7 +29,7 @@
 表示
   → GET /api/dashboard?year=YYYY
   → Store.listEntries()
-  → core/aggregate.mjs  effectiveEntries で「その年に効く金額」へ展開
+  → core/aggregate.mjs  effectiveEntries で「その年に計上する金額」へ展開
                         （一括償却は3年均等に分解される）
   → core/tax.mjs        給与と合算して税額を算出
   → JSON

@@ -8,7 +8,7 @@ Merged: 0bbacec0fdb0713f80ba932b1aab3024fc830df0
 
 - `public/app.js`: `takePaste` から圧縮して `onDone` へ渡す部分を `attachImage(file, onDone)` として切り出し、貼り付け（`takePaste`）とファイル選択（`takeFile`）の両方から呼ぶ共通経路にした。入力画面は `applyPending` で貼り付けと選択を同じプレビュー表示に統一。台帳の編集行は選択と同時に `uploadReceipt` して `renderList()`（貼り付けと同じ）。ファイル選択後は毎回 `input.value` をクリアし、同じファイルを選び直せるようにした。
 - `public/index.html`: `#paste-area` の隣にファイル選択の入口（`label.file-btn` + `input[type=file]`）を並置。`accept` は `image/*` ではなく `.png,.jpg,.jpeg,.gif,.webp` を列挙し、モバイルでカメラが既定の選択肢にならないようにした（`capture` 属性は付けない）。文言も両経路があることが分かる表現に直した。
-- `public/style.css`: 素の `<input type=file>` をラベル経由でボタンとして見せる `.file-btn` を追加。色は既存の `:root` トークンのみを参照し、新規トークンは増やしていない。貼り付け専用の `.paste-area` はポインタ操作の効かない端末で従来どおり非表示にする一方、ファイル選択は端末を問わず使えるよう `#paste-preview` を非表示対象から外した。
+- `public/style.css`: 素の `<input type=file>` をラベル経由でボタンとして見せる `.file-btn` を追加。色は既存の `:root` トークンのみを参照し、新規トークンは増やしていない。貼り付け専用の `.paste-area` はポインタで操作できない端末で従来どおり非表示にする一方、ファイル選択は端末を問わず使えるよう `#paste-preview` を非表示対象から外した。
 - `README.md` / `README.en.md`: Screenshots のキャプションにあった貼り付け前提の記述を、貼り付け・ファイル選択の両方があることが分かる表現に直した。issue が言及していた Overview 中の「証憑の添付は PC のみ」という一文は、現在の README には存在しなかったため変更していない（grep で確認済み）。
 
 ## 保証

@@ -53,17 +53,17 @@ That merge exists for the return, though, not for reading the business. The `Bus
 
 ```mermaid
 flowchart TB
-  UI["public/<br/>Browser (dark only, no build step)"]
+  UI["🖥️ public/<br/>Browser (dark only, no build step)"]
 
   subgraph handler["core/api.mjs — single Request → Response handler"]
-    AGG["core/aggregate.mjs<br/>apportionment, journals, depreciation, consumption tax"]
-    TAX["core/tax.mjs<br/>salary deduction, income tax, resident tax"]
+    AGG["🧮 core/aggregate.mjs<br/>apportionment, journals, depreciation, consumption tax"]
+    TAX["💴 core/tax.mjs<br/>salary deduction, income tax, resident tax"]
   end
 
-  DEV["dev/server.mjs<br/>node:http adapter"]
-  FN["functions/api/<br/>Pages Functions adapter"]
-  LOCAL["LocalStore<br/>files under data/"]
-  GH[("GitHub repository<br/>entries/*.jsonl + receipts/")]
+  DEV["💻 dev/server.mjs<br/>node:http adapter"]
+  FN["☁️ functions/api/<br/>Pages Functions adapter"]
+  LOCAL["📁 LocalStore<br/>files under data/"]
+  GH[("🗄️ GitHub repository<br/>entries/*.jsonl + receipts/")]
 
   UI --> DEV --> handler
   UI --> FN --> handler

@@ -53,17 +53,17 @@
 
 ```mermaid
 flowchart TB
-  UI["public/<br/>ブラウザ（ダーク専用・ビルドなし）"]
+  UI["🖥️ public/<br/>ブラウザ（ダーク専用・ビルドなし）"]
 
   subgraph handler["core/api.mjs — Request → Response の単一ハンドラ"]
-    AGG["core/aggregate.mjs<br/>按分・仕訳・償却の展開・消費税"]
-    TAX["core/tax.mjs<br/>給与所得控除・所得税・住民税"]
+    AGG["🧮 core/aggregate.mjs<br/>按分・仕訳・償却の展開・消費税"]
+    TAX["💴 core/tax.mjs<br/>給与所得控除・所得税・住民税"]
   end
 
-  DEV["dev/server.mjs<br/>node:http アダプタ"]
-  FN["functions/api/<br/>Pages Functions アダプタ"]
-  LOCAL["LocalStore<br/>data/ 配下のファイル"]
-  GH[("GitHub リポジトリ<br/>entries/*.jsonl + receipts/")]
+  DEV["💻 dev/server.mjs<br/>node:http アダプタ"]
+  FN["☁️ functions/api/<br/>Pages Functions アダプタ"]
+  LOCAL["📁 LocalStore<br/>data/ 配下のファイル"]
+  GH[("🗄️ GitHub リポジトリ<br/>entries/*.jsonl + receipts/")]
 
   UI --> DEV --> handler
   UI --> FN --> handler

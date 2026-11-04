@@ -51,7 +51,7 @@ export function estimate({ businessIncome, salaryGross, deductions = 0, withheld
     + cfg.resident_tax.per_capita
     + (cfg.resident_tax.forest_tax ?? 0);
 
-  // 経費を1円積んだときに減る税額。事業所得が0未満（損益通算後）でも給与側に効く。
+  // 経費を1円積んだときに減る税額。事業所得が0未満（損益通算後）でも、給与所得と通算されるので税額は減る。
   const marginal = rate + cfg.resident_tax.rate + rate * cfg.reconstruction_rate;
 
   return {

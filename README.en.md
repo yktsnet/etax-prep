@@ -132,7 +132,7 @@ To exercise GitHub-backed storage locally, supply the keys from `.env.example` a
 
 ## Guarantees
 
-Contract-level guarantees and the tests backing them are collected in [docs/guarantees.en.md](docs/guarantees.en.md). Behaviour not listed there is not promised.
+Contract-level guarantees and the tests backing them are collected in [docs/guarantees/](docs/guarantees/README.en.md). Behaviour not listed there is not promised.
 
 Tax rates and deduction amounts live in `config/tax-<year>.json`, and the calculation code knows nothing about the year. **The bundled values are for Osaka City and tax year 2026, and are not guaranteed to track annual tax reform.** Verify them against the National Tax Agency's primary sources before each filing. Every figure produced is an estimate and is not a guarantee that a return is correct.
 

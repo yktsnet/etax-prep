@@ -20,10 +20,3 @@
 | [api](api.md)（`core/api.mjs` の HTTP API） |
 | [store-github](store-github.md)（`core/store-github.mjs` の `GitHubStore`） |
 
-## Gaps
-
-- 保存先（`LocalStore` / `GitHubStore`）が同一のインターフェースを満たすことが未保証。`GitHubStore` の失敗時の扱いは `store-github` の表にあり、ここで未保証なのは両実装の等価性である。とくに日付変更で所属月をまたぐ更新は両実装が別々に持つ分岐であり、片方だけ壊れうる。GitHub API の fake が要り、棚卸しの範囲を超えるため見送った
-- 資産の判定しきい値（10万・30万）が未保証。判定が UI 側（`public/app.js`）にあり、`core/` へ切り出さないとテストできない。実装の移動を伴うため見送った
-- `monthlyMatrix` が費用だけを集計し、売上を含めないことが未保証。テストの入力に売上の取引が無い
-- `revenueByMonth` が指定年以外の売上を含めないことが未保証。テストの入力が指定年の売上だけである
-- `estimate` が黒字の事業所得を給与所得に足して合計所得金額を出すことが未保証。合算のテストは事業所得が 0 で、赤字の側（損益通算）だけを確かめている

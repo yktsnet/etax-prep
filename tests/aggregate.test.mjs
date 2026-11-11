@@ -115,6 +115,27 @@ test('売上は月別に積み上がる', () => {
   assert.equal(r.months[1], 120000);
 });
 
+test('科目×月は費用だけを集計し、売上を含めない', () => {
+  const entries = [
+    e({ id: 'a', date: '2026-04-25', account: 'tsushin', amount: 11000, ratio: 0.3 }),
+    e({ kind: 'revenue', id: 'b', date: '2026-04-30', account: 'uriage', amount: 80000 }),
+  ];
+  const m = monthlyMatrix(entries, accounts, 2026);
+  assert.equal(m.total, 3300);
+  assert.equal(m.monthTotal[3], 3300);
+  assert.equal(m.rows.length, 1);
+});
+
+test('売上の月別は指定年以外の売上を含めない', () => {
+  const entries = [
+    e({ kind: 'revenue', id: 'a', date: '2026-02-28', account: 'uriage', amount: 120000 }),
+    e({ kind: 'revenue', id: 'b', date: '2025-02-28', account: 'uriage', amount: 50000 }),
+  ];
+  const r = revenueByMonth(entries, 2026);
+  assert.equal(r.total, 120000);
+  assert.equal(r.months[1], 120000);
+});
+
 test('給与は適用開始年月の履歴からその月に有効な額を引く', () => {
   const s = salaryForYear([
     { from: '2026-01', monthly: 500000, payday: 25 },

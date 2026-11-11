@@ -54,6 +54,11 @@ test('住民税の基礎控除は所得税と別の額を使う', () => {
   assert.notEqual(r.residentBasicDeduction, r.basicDeduction);
 });
 
+test('黒字の事業所得は給与所得に足して合計所得金額になる', () => {
+  const r = estimate({ businessIncome: 1000000, salaryGross: 6240000, deductions: 1200000 }, cfg);
+  assert.equal(r.totalIncome, 1000000 + r.salaryIncome);
+});
+
 test('課税所得は1000円未満を切り捨てる', () => {
   const r = estimate({ businessIncome: 1234, salaryGross: 6240000, deductions: 1200000 }, cfg);
   assert.equal(r.taxableIncome % 1000, 0);

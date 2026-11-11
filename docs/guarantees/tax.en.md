@@ -24,6 +24,7 @@
 | Guarantee | Test |
 |---|---|
 | `estimate` subtracts itemised and basic deductions from total income to produce taxable income | `事業所得と給与所得を合算して課税所得を出す` |
+| `estimate` adds a positive business income to salary income to form total income | `黒字の事業所得は給与所得に足して合計所得金額になる` |
 | The taxable income `estimate` returns is truncated to the nearest ¥1,000 | `課税所得は1000円未満を切り捨てる` |
 | `estimate` offsets a business loss against salary income (taxable income and tax come out lower than with a business income of 0) | `事業が赤字なら給与所得と損益通算される` |
 | `estimate` never returns negative taxable income, even when income falls short of the deductions | `所得が控除に満たなくても課税所得と税額は負にならない` |

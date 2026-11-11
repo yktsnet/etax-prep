@@ -42,6 +42,8 @@
 | `monthlyMatrix` aggregates transactions by account and month | `科目×月は按分後の額で、指定年だけを集計する` |
 | The amounts `monthlyMatrix` aggregates are post-apportionment amounts | `科目×月は按分後の額で、指定年だけを集計する` |
 | `monthlyMatrix` excludes transactions outside the given year | `科目×月は按分後の額で、指定年だけを集計する` |
+| `monthlyMatrix` aggregates expenses only and excludes revenue | `科目×月は費用だけを集計し、売上を含めない` |
 | `revenueByMonth` aggregates revenue by month | `売上は月別に積み上がる` |
+| `revenueByMonth` excludes revenue from other years | `売上の月別は指定年以外の売上を含めない` |
 | `salaryForYear` resolves the monthly amount in effect for each month from the effective-date history | `給与は適用開始年月の履歴からその月に有効な額を引く` |
 | `salaryForYear` books no salary for months before the first effective date | `適用開始前の月は給与が立たない` |

@@ -20,10 +20,3 @@ The scope is the pure functions in `core/` (aggregation and tax calculation) and
 | [api](api.en.md) (the HTTP API in `core/api.mjs`) |
 | [store-github](store-github.en.md) (`GitHubStore` in `core/store-github.mjs`) |
 
-## Gaps
-
-- That the two storage backends (`LocalStore` and `GitHubStore`) satisfy the same interface is unguaranteed. How `GitHubStore` handles failures is in the `store-github` table; what is unguaranteed here is the equivalence of the two implementations. In particular, an update that moves a transaction across month boundaries is a branch each implementation carries separately, so one can break alone. Deferred because it needs a fake for the GitHub API, which goes beyond the scope of this audit.
-- The asset thresholds (¥100k and ¥300k) are unguaranteed. The decision lives in the UI (`public/app.js`) and cannot be tested without extracting it into `core/`. Deferred because it would require moving implementation.
-- That `monthlyMatrix` aggregates expenses only and excludes revenue is unguaranteed. The test input contains no revenue transaction.
-- That `revenueByMonth` excludes revenue from other years is unguaranteed. The test input contains only revenue from the given year.
-- That `estimate` adds a positive business income to salary income to form total income is unguaranteed. The merging test uses a business income of 0, and only the loss side (loss offset) is checked.
